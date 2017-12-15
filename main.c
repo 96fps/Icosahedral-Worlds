@@ -1,4 +1,4 @@
-// Simple OpenGL graphics program
+// OpenGL graphics program exploring geometry 
 
 #include <GL/glut.h>
 #include <GL/gl.h>
@@ -12,47 +12,44 @@ double rot = 0;
 double scalefactor = (2.0*PI); //const
 int detail=2;
 
-GLfloat isovert[12][3] = {0};
-int isoTriangle[20][3] = {0};
+//global primitives
+  GLfloat isovert[12][3] = {0};
+  int isoTriangle[20][3] = {0};
 
-GLfloat isoNetVert[22][3] = {0};
-int isoNetTriangle[20][3] = {0};
+  GLfloat isoNetVert[22][3] = {0};
+  int isoNetTriangle[20][3] = {0};
 
-GLfloat isoTubeVert[22][3] = {0};
-int isoTubeTriangle[20][3] = {0};
+  GLfloat isoTubeVert[22][3] = {0};
+  int isoTubeTriangle[20][3] = {0};
 
 GLfloat xrot(GLfloat x, GLfloat y, GLfloat theta);
 GLfloat yrot(GLfloat x, GLfloat y, GLfloat theta);
 
 void display(){
 
-    //Setup
+  //Setup
     glClearColor(0,0,0,0);
     glPointSize(4.0);
     glLineWidth(1.5);
     glEnable(GL_CULL_FACE);
     glPushMatrix();
 
-    //camera stuff
+  //camera stuff
     configcamera();
 
-    //Main attraction:
+  // Background:
+    cube();
 
-    // peelGlobe();
+  //Main attraction:
     // squishy();
     // template();
     rollingsphere(3);
-
     // static_contact(1);
     // std_globe();
     // tube();
+    // superdivIsaNet_ext(detail,0.0);
 
-   // superdivIsaNet_ext(detail,0.0);
-
-    // Background:
-    cube();
-
-    //cleanup
+  //cleanup
     glPopMatrix();
     glutSwapBuffers();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -119,161 +116,93 @@ void std_globe(){
     superdivIsa_ext(detail,1.0);
   glPopMatrix();
 }
-void peelGlobe(){
-  glPushMatrix();
- 
-      glDisable(GL_CULL_FACE);
-      // glTranslatef(0,0,1);
-      glTranslatef(0,sqrt(3)*.25,0);
-     
-      // superdivIsaTube(detail,sin(theta)*0.5+0.5);
-      superdivIsaTube(detail,1.0);
-      glTranslatef(5,0,0);
-
-  glPopMatrix();
-  glEnable(GL_CULL_FACE);
-}
 void tube(){
-
   glPushMatrix();
- 
-      glDisable(GL_CULL_FACE);
-      // glTranslatef(0,0,1);
-      glTranslatef(0,sqrt(3)*.25,0);
-     
-      // glRotatef(-90,0,1,0);
-      glRotatef(rot*360,0,1,0);
-
-      superdivIsaTube(detail,1.0);
-
+    glDisable(GL_CULL_FACE);
+    glTranslatef(0,sqrt(3)*.25,0);
+    // glRotatef(-90,0,1,0);
+    glRotatef(rot*360,0,1,0);
+    superdivIsaTube(detail,1.0);
   glPopMatrix();
   glEnable(GL_CULL_FACE);
 }
 void rollingsphere(int copies){
-
   glPushMatrix();
     glRotatef(90,1,0,0);
     glPushMatrix();
       glEnable(GL_CULL_FACE);
       glRotatef(-90,0,1,0);
       glRotatef(rot*360,0,1,0);
-      // glScalef(1,1,1);
       superdivIsa_ext(detail,1.0);
     glPopMatrix();
-
     glPushMatrix();
       glDisable(GL_CULL_FACE);
       glTranslatef(0,0,1);
-      // glTranslatef(0,0,-.1);
       glScalef(scalefactor*.2,scalefactor*.2,scalefactor*.2);
       glTranslatef(rot*5-2.5,sqrt(3)*.25,0);
-      
       glTranslatef(-2.5*copies,0,0);
-     
-      for(int i=0; i<copies; i++)
-      {
+      for(int i=0; i<copies; i++){
         superdivIsaNet_ext(detail,0.0);
         glTranslatef(5,0,0);
       }
     glPopMatrix();
-
   glPopMatrix();
   glEnable(GL_CULL_FACE);
+  glBegin(GL_POLYGON);
+    glColor3f(0,0,0);
+    glVertex3f( 10.1, 10, 10);
+    glVertex3f( 10.1, 10,-10);
+    glVertex3f( 10.1,-10,-10);
+    glVertex3f( 10.1,-10, 10);
+  glEnd();
+  glBegin(GL_POLYGON);
+    glColor3f(0,0,0);
+    glVertex3f(-10.1, 10,-10);
+    glVertex3f(-10.1, 10, 10);
+    glVertex3f(-10.1,-10, 10);
+    glVertex3f(-10.1,-10,-10);
+  glEnd();
 }
 void static_contact(int copies){
-
   glPushMatrix();
-
     glPushMatrix();
       glDisable(GL_CULL_FACE);
       glTranslatef(0,0,1);
       // glTranslatef(0,0,-.1);
       glScalef(scalefactor*.2,scalefactor*.2,scalefactor*.2);
       glTranslatef(rot*5-2.5,sqrt(3)*.25,0);
-      
       glTranslatef(-2.5*copies,0,0);
-     
-      for(int i=0; i<copies; i++)
-      {
+      for(int i=0; i<copies; i++){
         superdivIsaNet_ext(detail,0.0);
         glTranslatef(5,0,0);
       }
     glPopMatrix();
-
   glPopMatrix();
   glEnable(GL_CULL_FACE);
 }
 void Triangle(GLfloat* a,GLfloat* b,GLfloat* c,GLfloat* color){
-   glBegin(GL_POLYGON);
-    {
-        glColor3f (color[0], color[1], color[2]);
-        // glColor3f (1,0,0);
-        glVertex3fv(a);
-        // glColor3f (0,1,0);
-        glVertex3fv(b);
-        // glColor3f (0,0,1);
-        glVertex3fv(c);
-    }
-    glEnd();
-
-    // glBegin(GL_POLYGON);
-    // {
-    //     // glColor3f (color[0], color[1], color[2]);
-    //     glColor3f (1,0,0);
-    //     glVertex3fv(a);
-    //     glColor3f (0,1,0);
-    //     glVertex3fv(b);
-    //     glColor3f (0,0,1);
-    //     glVertex3fv(c);
-    // }
-    // glEnd();
-
-    // glBegin(GL_LINE_LOOP);
-    // {
-    //     glColor3f (color[0]*0.5, color[1]*0.5, color[2]*0.5);
-    //     // glColor3f (1,0,0);
-    //     glVertex3fv(a);
-    //     // glColor3f (0,1,0);
-    //     glVertex3fv(b);
-    //     // glColor3f (0,0,1);
-    //     glVertex3fv(c);
-    // }
-    // glEnd();
+  glBegin(GL_POLYGON);
+    glColor3f (color[0], color[1], color[2]);
+    glVertex3fv(a);
+    glVertex3fv(b);
+    glVertex3fv(c);
+  glEnd();
 }
 void TriangleTricolor(GLfloat* a,GLfloat* b,GLfloat* c,GLfloat* colorset){
-
-    glBegin(GL_POLYGON);
-    {
-       // glColor3f (color[0], color[1], color[2]);
-       
-        glColor3f (colorset[0], colorset[1], colorset[2]);
-        glVertex3fv(a);
-        glColor3f (colorset[3], colorset[4], colorset[5]);
-        glVertex3fv(b);
-        glColor3f (colorset[6], colorset[7], colorset[8]);
-        glVertex3fv(c);
-    }
-    glEnd();
-
-    // glBegin(GL_POLYGON);
-    // {
-    //    // glColor3f (color[0], color[1], color[2]);
-       
-    //     // glColor3f (color[0], color[1], color[2]);
-    //     glColor3f (1,0,0);
-    //     glVertex3fv(a);
-    //     glColor3f (0,1,0);
-    //     glVertex3fv(b);
-    //     glColor3f (0,0,1);
-    //     glVertex3fv(c);
-    // }
-    // glEnd();
+  glBegin(GL_POLYGON);
+    glColor3f (colorset[0], colorset[1], colorset[2]);
+    glVertex3fv(a);
+    glColor3f (colorset[3], colorset[4], colorset[5]);
+    glVertex3fv(b);
+    glColor3f (colorset[6], colorset[7], colorset[8]);
+    glVertex3fv(c);
+  glEnd();
 }
 void subDivTri2(GLfloat* a,GLfloat* b,GLfloat* c,GLfloat* color, int m, double inflate) {
   GLfloat v[3][3];
   int j;
   int i;
-  // if (m>1)
+
   if (m>0)
   {
     for(j=0;j<3;j++){
@@ -281,9 +210,9 @@ void subDivTri2(GLfloat* a,GLfloat* b,GLfloat* c,GLfloat* color, int m, double i
       v[1][j]=(a[j]+c[j])/2;
       v[2][j]=(b[j]+c[j])/2;
     }
-    for(j=0;j<3;j++){
-    
-    GLfloat magnitude = 
+    for(j=0;j<3;j++)
+    {
+      GLfloat magnitude = 
       sqrt(v[j][0]*v[j][0]
           +v[j][1]*v[j][1]
           +v[j][2]*v[j][2]);
@@ -316,7 +245,6 @@ void subDivTri2(GLfloat* a,GLfloat* b,GLfloat* c,GLfloat* color, int m, double i
       color3[0]=color[0]*.9+0.1;
       color3[1]=color[1]*.9;
       color3[2]=color[2]*.9;
-  
 
     subDivTri2(a,v[0],v[1],color1,m-1,inflate);
     subDivTri2(v[0],b,v[2],color2,m-1,inflate);
@@ -342,14 +270,13 @@ void superDivTri2(GLfloat* a,GLfloat* b,GLfloat* c,GLfloat* color, int m, double
 
       v[5][j]=(a[j]+2*c[j])/3;
       v[6][j]=(b[j]+2*c[j])/3;
-
-
     }
 
     //normalize
 
-    for(j=0;j<7;j++){
-    GLfloat magnitude = 
+    for(j=0;j<7;j++)
+    {
+      GLfloat magnitude = 
       sqrt(v[j][0]*v[j][0]
           +v[j][1]*v[j][1]
           +v[j][2]*v[j][2]);
@@ -520,21 +447,15 @@ void superdivIsa_ext(int m, double inflate){
   for(int i = 0; i<20; i ++)
   {
     GLfloat color[3]={0};
-    // color[0]=(i/4)*.2;
-    // color[1]= 1-(i/4)*.2;
-    // color[2]=  0;
-    
 
     color[0]= 1-(i/2)*.1;
     color[1]=(i/2)*.1;
     color[2]=  0;
-    
 
     superDivTri2(isovert[isoTriangle[i][0]],
              isovert[isoTriangle[i][1]],
              isovert[isoTriangle[i][2]],
              color, m, inflate);
-   
   }
 }
 void subdivIsa_ext(int m, double inflate){
@@ -542,21 +463,15 @@ void subdivIsa_ext(int m, double inflate){
   for(int i = 0; i<20; i ++)
   {
     GLfloat color[3]={0};
-    // color[0]=(i/4)*.2;
-    // color[1]= 1-(i/4)*.2;
-    // color[2]=  0;
-    
 
     color[0]= 1-(i/2)*.1;
     color[1]=(i/2)*.1;
     color[2]=  0;
-    
 
     subDivTri2(isovert[isoTriangle[i][0]],
              isovert[isoTriangle[i][1]],
              isovert[isoTriangle[i][2]],
              color, m, inflate);
-   
   }
 }
 void superdivIsaNet_ext(int m, double inflate){
@@ -564,10 +479,6 @@ void superdivIsaNet_ext(int m, double inflate){
   for(int i = 0; i<20; i ++)
   {
     GLfloat color[3]={0};
-    // color[0]=(i/4)*.2;
-    // color[1]= 1-(i/4)*.2;
-    // color[2]=  0;
-    
 
     color[0]= 1-(i/2)*.1;
     color[1]=(i/2)*.1;
@@ -581,14 +492,9 @@ void superdivIsaNet_ext(int m, double inflate){
   }
 }
 void superdivIsaTube(int m, double inflate){
-
   for(int i = 0; i<20; i ++)
   {
     GLfloat color[3]={0};
-    // color[0]=(i/4)*.2;
-    // color[1]= 1-(i/4)*.2;
-    // color[2]=  0;
-    
 
     color[0]= 1-(i/2)*.1;
     color[1]=(i/2)*.1;
@@ -601,27 +507,20 @@ void superdivIsaTube(int m, double inflate){
   }
 }
 void solidIsa2(){
-
   for(int i = 0; i<20; i ++)
   {
     GLfloat color[3]={0};
     color[0]=(i/4)*.2;
     color[1]= 1-(i/4)*.2;
     color[2]=  0;
-
-    // color[0]=(i/2)*.1;
-    // color[1]= 1-(i/2)*.1;
-    // color[2]=  0;
     
     Triangle(isovert[isoTriangle[i][0]],
              isovert[isoTriangle[i][1]],
              isovert[isoTriangle[i][2]],
              color);
-   
   }
 }
 void solidIsaNet2(){
-
   for(int i = 0; i<20; i ++)
   {
     GLfloat color[3]={0};
@@ -629,15 +528,10 @@ void solidIsaNet2(){
     color[1]= 1-(i/4)*.2;
     color[2]=  0;
 
-    // color[0]=(i/2)*.1;
-    // color[1]= 1-(i/2)*.1;
-    // color[2]=  0;
-    
     Triangle(isoNetVert[isoNetTriangle[i][0]],
              isoNetVert[isoNetTriangle[i][1]],
              isoNetVert[isoNetTriangle[i][2]],
              color);
-   
   }
 }
 void generatePrimitives(){
@@ -664,7 +558,6 @@ void isoVerts(){
   rote[1]=sin(lat);
 
   for(int i=0; i<5; i++){
-
     rot2[0]=cos(lon*i)*rote[0] - sin(lon*i)*rote[2];
     rot2[1]=rote[1];
     rot2[2]=sin(lon*i)*rote[0] + cos(lon*i)*rote[2];
@@ -675,15 +568,13 @@ void isoVerts(){
     isovert[i+6][0]=-rot2[0];
     isovert[i+6][1]=-rot2[1];
     isovert[i+6][2]=-rot2[2];
-
   }
 }
 void isoTri(){
   int i; //strip of triangles
   int j; //row of the triangle
   int k;
-  for(i = 0; i<5; i++)
-  {     
+  for(i = 0; i<5; i++){     
     j=0;
     k=4-i;
 
@@ -715,22 +606,18 @@ void isoNetVerts(){
   int i;
   double h = sqrt(3)*0.5;
 
-  for(i=0; i<5; i++)
-  {
+  for(i=0; i<5; i++){
     isoNetVert[i][0]=i+0.5;
     isoNetVert[i][1]=h;
   }
-  for(i=5; i<11; i++)
-  {
+  for(i=5; i<11; i++){
     isoNetVert[i][0]=(i-5);
   }
-  for(i=11; i<17; i++)
-  {
+  for(i=11; i<17; i++){
     isoNetVert[i][0]=(i-11)+0.5;
     isoNetVert[i][1]=-h;
   }
-  for(i=17; i<22; i++)
-  {
+  for(i=17; i<22; i++){
     isoNetVert[i][0]=(i-17)+1;
     isoNetVert[i][1]=-2*h;
   }
@@ -738,9 +625,7 @@ void isoNetVerts(){
 void isoNetTri(){
   int j;
   for(int i = 0; i<5; i++){
-
     j = i*4;
-
     isoNetTriangle[j][0]=5+i;
     isoNetTriangle[j][1]=6+i;
     isoNetTriangle[j][2]=0+i;
@@ -759,9 +644,6 @@ void isoNetTri(){
     isoNetTriangle[j][0]=12+i;
     isoNetTriangle[j][1]=11+i;
     isoNetTriangle[j][2]=17+i;
-
-
-    
   }
 }
 void genIcosahedronTube(){
@@ -773,8 +655,7 @@ void isoTubeVerts(){
   double h = sqrt(3)*0.5;
   double angle=0;
 
-  for(i=0; i<22; i++)
-  {
+  for(i=0; i<22; i++){
     angle=(isoNetVert[i][0]*.2)*scalefactor;
     
     isoTubeVert[i][0]=yrot(1.0, 0, angle);
@@ -785,9 +666,7 @@ void isoTubeVerts(){
 void isoTubeTri(){
   int j;
   for(int i = 0; i<5; i++){
-
     j = i*4;
-
     isoTubeTriangle[j][0]=5+i;
     isoTubeTriangle[j][1]=6+i;
     isoTubeTriangle[j][2]=0+i;
@@ -809,7 +688,6 @@ void isoTubeTri(){
   }
 }
 void cube(){
-
   GLfloat source[3][3]=
     {{.4,.2,.2},
      {.2,.4,.2},
@@ -817,15 +695,12 @@ void cube(){
 
   GLfloat colors[3][3]={0};
 
-  for(int c = 0; c<3; c++)
-  {
+  for(int c = 0; c<3; c++){
     colors[c][0]=source[c][0];
     colors[c][1]=source[c][1];
     colors[c][2]=source[c][2];
   }
-
-  for(int i = 0; i< 2; i++)
-  {
+  for(int i = 0; i< 2; i++){
     if(i==1){
       for(int c = 0; c<3; c++){
         colors[c][0]*=0.5;
@@ -837,8 +712,7 @@ void cube(){
     else glLineWidth(1.1);
 
     glBegin( GL_LINES);
-    for(int q = -10; q<=10; q++)
-    {
+    for(int q = -10; q<=10; q++){
       glColor3fv ( colors[0]);
         glVertex3f( 10,  q, 10);
         glVertex3f( 10,  q,-10);
@@ -874,21 +748,6 @@ void cube(){
     }
     glEnd();
   }
-
-  glBegin(GL_POLYGON);
-    glColor3f(0,0,0);
-    glVertex3f( 10.1, 10, 10);
-    glVertex3f( 10.1, 10,-10);
-    glVertex3f( 10.1,-10,-10);
-    glVertex3f( 10.1,-10, 10);
-  glEnd();
-  glBegin(GL_POLYGON);
-    glColor3f(0,0,0);
-    glVertex3f(-10.1, 10,-10);
-    glVertex3f(-10.1, 10, 10);
-    glVertex3f(-10.1,-10, 10);
-    glVertex3f(-10.1,-10,-10);
-  glEnd();
 }
 void mymotion() {
     // usleep(16667);
@@ -902,7 +761,6 @@ void mymotion() {
     glutPostRedisplay();
 }
 void resize(GLsizei w, GLsizei h){
-
     GLsizei ww,hh;
 
     glMatrixMode(GL_PROJECTION);
@@ -929,7 +787,6 @@ void resize(GLsizei w, GLsizei h){
     glViewport(0,0,w,h);
 }
 int main(int argc, char** argv){
-
     glutInit( &argc, argv );
     glutInitWindowSize(512,512);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB| GLUT_DEPTH );
@@ -937,11 +794,8 @@ int main(int argc, char** argv){
     glutDisplayFunc( display );
     glutIdleFunc( mymotion );
     glutReshapeFunc( resize );
-
     generatePrimitives();
-    
     glutMainLoop();
-
     return 0;
 }
 GLfloat xrot(GLfloat x, GLfloat y, GLfloat theta){
