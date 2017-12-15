@@ -41,10 +41,11 @@ void display(){
     // peelGlobe();
     // squishy();
     // template();
-    // rollingsphere(1);
-    static_contact(1);
-    std_globe();
-    tube();
+    rollingsphere(3);
+
+    // static_contact(1);
+    // std_globe();
+    // tube();
 
    // superdivIsaNet_ext(detail,0.0);
 
@@ -61,13 +62,13 @@ void configcamera(){
     // glTranslatef(0,0,-3);
     // glTranslatef(0,0,-5);
     glTranslatef(0,0,-10);
-     // glRotatef(15,1,0,0);
+     glRotatef(15,1,0,0);
      // glRotatef(cos(theta)*180/PI,1,0,0);
      // glRotatef(45,1,0,0);
 
    // wobble();
-   // swivel1();
-   swivel3();
+   swivel1();
+   // swivel3();
     // lowOrbit();  
 }
 void wobble(){
@@ -873,11 +874,30 @@ void cube(){
     }
     glEnd();
   }
+
+  glBegin(GL_POLYGON);
+    glColor3f(0,0,0);
+    glVertex3f( 10.1, 10, 10);
+    glVertex3f( 10.1, 10,-10);
+    glVertex3f( 10.1,-10,-10);
+    glVertex3f( 10.1,-10, 10);
+  glEnd();
+  glBegin(GL_POLYGON);
+    glColor3f(0,0,0);
+    glVertex3f(-10.1, 10,-10);
+    glVertex3f(-10.1, 10, 10);
+    glVertex3f(-10.1,-10, 10);
+    glVertex3f(-10.1,-10,-10);
+  glEnd();
 }
 void mymotion() {
     // usleep(16667);
     theta +=0.005;
-    rot =sin(theta/PI*4)*0.5+0.5;
+    // rot =sin(theta/PI*4)*0.5+0.5;
+    rot = theta;
+    if(rot>1){
+      rot -= (int)rot;
+    }
 
     glutPostRedisplay();
 }
