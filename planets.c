@@ -6,7 +6,7 @@
 #include <math.h>
 #include <stdio.h>
 
-GLfloat theta = 0.0;
+GLfloat theta = 16280.0;
 
 GLfloat isovert[12][3] = {0};
 int isoTriangle[20][3] = {0};
@@ -17,7 +17,7 @@ int isoNetTriangle[20][3] = {0};
 int sec = 0;
 
 double AU = 149.6; // in gigameters (million km)
-double timescale = 360/60; // 60sec = one earth year
+double timescale = 360/60*0.5; // 60sec = one earth year
 double Rad = 6.28/360;
 
 double enlargement = 10;
@@ -41,11 +41,11 @@ double planets[10][4] =
     { 12756,   149.6,   24.0, 1}, //earth
     {  6792,   227.9,   24.7, 2}, //mars
     {   473,  414.01,   9.07, 0}, //ceres
-    {142984,   778.6, 4222.6, 4}, //jupiter
-    {120536,  1433.5,   2802, 4}, //saturn
-    { 51118,  2872.5,   24.0, 3}, //uranus
-    { 49528,  4495.1,   24.7, 2}, //neptune
-    {1188.3, 5906.38,    123, 1}, //pluto
+    {142984,   778.6,    9.9, 4}, //jupiter
+    {120536,  1433.5,   10.7, 4}, //saturn
+    { 51118,  2872.5,   17.2, 3}, //uranus
+    { 49528,  4495.1,   16.1, 2}, //neptune
+    {1188.3, 5906.38,     10, 1}, //pluto
   };
 
 // planet colors (rgb)
@@ -103,7 +103,7 @@ void display(){
   // superdivIsaNet(3);
   
   glPushMatrix();
-  glScalef(50,50,50);
+  glScalef(80,80,80);
   cube();
   glPopMatrix();
 
@@ -142,16 +142,21 @@ void planet(int i){
   glPushMatrix();
   glScalef(size,size,size);     
   // scaled so planet radius = 1.0 units
-    sphere(planetColors[i]);
 
-    if(i==6){
+    glRotatef(theta * timescale *60 * 365 * planets[i][3]/24.0 ,0,1,0);
+    sphere(planetColors[i]);
+     if(i==6){
        ring2(1.9,0.2);
        ring2(2.5,0.3);
     }
+    // glTranslatef(0.5,0,0);     
+    // sphere(planetColors[i]);
+
+   
   glPopMatrix();
 }
 void moon(int parent, int index){
-  double color[] = {10,10,10};
+  double color[] = {1.2,1.2,1.2};
     sphere(color);
 }
 void planetarySys(double param[4],int index){
@@ -163,8 +168,11 @@ void planetarySys(double param[4],int index){
       double inAU = dist/AU;
       double year = 1.0/(inAU*inAU); //years per year
 
-     
-      // ORBIT PARENT
+     if (index==9){
+      glRotatef(6,1,0,0);
+
+     }
+      // ORBIT SUN
       glRotatef(theta *timescale* year,0,1,0);
 
       //make distances smaller
@@ -181,15 +189,12 @@ void planetarySys(double param[4],int index){
         // Draw the planet
         planet(index);
 
-        // MOON-time ==
-        // if(index==2){//for earth
-        //   moonSys(moonStats[1], moonStats[0], index, 0);
-        // }
-        // else
-        {
+        //moon
+        if(param[3] != 0){
+        
           double d1= moonStats[1] * pow(planets[index][0]/planets[2][0],0.7);
-          // d1 += planets[index][0]/2.0;
-           double r1= moonStats[0] * pow(planets[index][0]/planets[2][0],0.2);
+          double r1= moonStats[0] * pow(planets[index][0]/planets[2][0],0.2);
+          
           if(index==3){
             r1/=4;
           }
@@ -216,9 +221,6 @@ void moonSys(double dist, double radius, int parent, int index){
       double distScaled=dist*6;
   
 
-     //make distances smaller
-      // double shrintMint=sqrt(shrinkdist);
-      // glScalef(shrintMint,shrintMint,shrintMint);    
  
       // ORBIT PARENT
       glRotatef( theta *timescale*monthPyear*month*grav_factor,0,1,0);
@@ -228,9 +230,6 @@ void moonSys(double dist, double radius, int parent, int index){
       glPushMatrix();
       glTranslatef(distScaled,0,0);
       // position RELATIVE TO CENTER OF MOON
-    
-    //make planets bigger
-        // glScalef(enlargement,enlargement,enlargement);  
     
         glPushMatrix();
         glScalef(size,size,size);
@@ -282,8 +281,6 @@ void ring2(double dist,double size){
   glEnable(GL_CULL_FACE);
 }
 void solarSystem(){
-
-	
 	sun();
 
 	for(int i =0; i<10; i++){
@@ -297,18 +294,23 @@ void configcamera(){
     // glTranslatef(0,0,-3);
     // glTranslatef(0,0,-5);
     // glTranslatef(0,0,-8);
-    glTranslatef(0,0,-120);
+    // glTranslatef(0,0,-20);
     // glTranslatef(0,0,-50);
+    // glTranslatef(0,0,-120);
+
+    glTranslatef(0,0,-
+     pow((1+cos(theta * Rad * 180/10))*4.5,3)-10);
 
      // glRotatef( 5,1,0,0);
      // glRotatef(5,1,0,0);
      // glRotatef(15,1,0,0);
      glRotatef(20,1,0,0);
+
      // glRotatef(30,1,0,0);
      // glRotatef(45,1,0,0);
 
    // wobble();
-   swivel1(90/10);
+   swivel1(90/30);
 
     // swivel2();  
 
@@ -428,6 +430,7 @@ void cube(){
 void mymotion() {
     usleep(16667); // 1/60th of a sec
     theta +=0.016667;
+    // theta +=0.016667/4.0;
     glutPostRedisplay();
 
     if (theta >=sec){
