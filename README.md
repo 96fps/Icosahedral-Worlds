@@ -4,12 +4,12 @@ OpenGL project with the eventual goal of generating explorable worlds.
 In truth a dumping ground for my graphics projects
 
 ## Tesselated Sphere
-![pretty colors...](Sphere.png)
+![colorful sphere spinning with changing illumination](lightcube.gif)
 
 ## Solar System
-![Not remotely to scale.](Solar.png)
+![Model of solar system in motion, planets with moons orbiting the sun.](planets.gif)
 
 ## /r/Outrun
-![race the sunrise!](Outrun.png)
+![white block driving towards virutal sunset](outrun.gif)
 
-Currently only targeting OpenGL 2 on linux
+Currently targeting OpenGL 2 on linux
