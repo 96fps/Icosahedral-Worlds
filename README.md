@@ -1,15 +1,15 @@
-# Icosahedral Worlds
-OpenGL project with the eventual goal of generating explorable worlds.
+A collection of OpenGL 2 demos.
 
-In truth a dumping ground for my graphics projects
+## Previews
 
-## Tesselated Sphere
 ![colorful sphere spinning with changing illumination](lightcube.gif)
 
-## Solar System
+A tesselated sphere, using a subdivided icosahedron. 
+
 ![Model of solar system in motion, planets with moons orbiting the sun.](planets.gif)
 
-## /r/Outrun
+An out of scale model of our solar system.
+
 ![white block driving towards virutal sunset](outrun.gif)
 
-Currently targeting OpenGL 2 on linux
+A "car" driving into the virtual sunset, inspired by [/r/outrun](http://www.reddit.com/r/outrun).
