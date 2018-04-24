@@ -1,6 +1,9 @@
 A collection of OpenGL 2 demos.
 
 ## Previews
+![simplified human figure running on a plane](figurine3.gif)
+
+Running man
 
 ![colorful sphere spinning with changing illumination](lightcube.gif)
 
