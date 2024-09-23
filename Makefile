@@ -1,5 +1,5 @@
 # call on xxxx.c with 'make xxxx' to compile to xxxx
-# sudo apt install libxmu-dev libxmu-headers
+# sudo apt install freeglut3-dev libxmu-dev libxmu-headers
 
 CC = gcc
 
