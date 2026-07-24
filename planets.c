@@ -6,6 +6,8 @@
 #include <math.h>
 #include <stdio.h>
 
+#include "planets.h"
+
 GLfloat theta = 16280.0;
 
 GLfloat isovert[12][3] = {0};

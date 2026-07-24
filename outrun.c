@@ -5,6 +5,8 @@
 #include <GL/glu.h>
 #include <math.h>
 
+#include "outrun.h"
+
 #define PI 3.141592
 GLfloat theta = 0.0;
 double rot = 0;
@@ -391,7 +393,7 @@ void cube2(){
   glEnd();
   glPopMatrix();
 }
-void mymotion() {
+void mymotion(){
     // usleep(16667);
     theta +=1.0/60;
     // rot =sin(theta/PI*4)*0.5+0.5;

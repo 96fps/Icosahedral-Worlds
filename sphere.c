@@ -1,5 +1,8 @@
 #include <GL/glut.h>
 #include <stdlib.h>
+#include <math.h>
+
+#include "sphere.h"
 
 static GLfloat theta[] = {0.0, 0.0, 0.0} ;
 
@@ -9,12 +12,6 @@ double Rad = 6.28/360;
 GLfloat isovert[12][3] = {0};
 int isoTriangle[20][3] = {0};
 
-typedef struct materialStruct{
-  GLfloat ambient[4];
-  GLfloat diffuse[4];
-  GLfloat specular[4];
-  GLfloat shininess;
-} materialStruct;
 
 materialStruct brassMaterial = {
   { 0.33, 0.22, 0.03, 1.0},
@@ -453,13 +450,15 @@ void init() {
   isoTri();
   isoVerts();
 }
-void config_lights(GLfloat* lit_pos){
+// void config_lights(GLfloat* lit_pos){
+void config_lights(){
 
   glEnable(GL_LIGHTING);
   // glEnable(GL_NORMALIZE);
   glDisable(GL_NORMALIZE);
 
 
+  GLfloat lit_pos[] = {0,0,0,0};
   GLfloat light0_pos2[] = {0,0,0,0};
   GLfloat light1_pos2[] = {0,0,0,0};
   GLfloat light2_pos2[] = {0,0,0,0};

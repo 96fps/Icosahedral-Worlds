@@ -5,7 +5,8 @@
 #include <GL/glu.h>
 #include <math.h>
 
-#define PI 3.141592
+#include "main.h"
+
 GLfloat theta = 0.0;
 double rot = 0;
 
